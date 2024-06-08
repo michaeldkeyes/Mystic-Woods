@@ -1,5 +1,7 @@
-package com.mygdx.mysticwoods;
+package com.mygdx.mysticwoods.screen;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -7,8 +9,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.mysticwoods.MysticWoods;
+import com.mygdx.mysticwoods.ecs.component.ImageComponent;
+import com.mygdx.mysticwoods.ecs.system.RenderSystem;
 
 /**
  * First screen of the application. Displayed after the application is created.
@@ -18,31 +21,33 @@ public class GameScreen extends ScreenAdapter {
     private static final String TAG = GameScreen.class.getSimpleName();
 
     private final AssetManager assetManager;
+    private final Engine engine;
     private final Stage stage;
-    private final Texture texture;
-    private final Viewport viewport;
 
     public GameScreen(final MysticWoods game) {
         this.assetManager = game.getAssetManager();
-        this.viewport = game.getViewport();
-        stage = new Stage(viewport);
+        this.engine = game.getEngine();
+        stage = new Stage(game.getViewport());
 
-        assetManager.load("graphics/player.png", Texture.class);
-        assetManager.finishLoading();
-
-        this.texture = assetManager.get("graphics/player.png", Texture.class);
+        engine.getSystem(RenderSystem.class).setStage(stage);
     }
 
     @Override
     public void show() {
         Gdx.app.debug(TAG, "show");
 
-        final Image playerImage = new Image(texture);
-        playerImage.setPosition(1, 1);
-        playerImage.setSize(1, 1);
-        playerImage.setScaling(Scaling.fill);
+        assetManager.load("graphics/player.png", Texture.class);
+        assetManager.finishLoading();
 
-        stage.addActor(playerImage);
+        final Texture texture = assetManager.get("graphics/player.png", Texture.class);
+
+        final Entity player = engine.createEntity();
+        final ImageComponent imageComponent = engine.createComponent(ImageComponent.class);
+        imageComponent.image = new Image(texture);
+        imageComponent.image.setSize(4, 4);
+        player.add(imageComponent);
+
+        engine.addEntity(player);
     }
 
     @Override
@@ -51,8 +56,7 @@ public class GameScreen extends ScreenAdapter {
             Gdx.app.exit();
         }
 
-        stage.act(delta);
-        stage.draw();
+        engine.update(delta);
     }
 
     @Override
