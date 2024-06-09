@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.mysticwoods.ecs.system.AnimationSystem;
 import com.mygdx.mysticwoods.ecs.system.RenderSystem;
 import com.mygdx.mysticwoods.screen.GameScreen;
 
@@ -19,7 +20,7 @@ public class MysticWoods extends Game {
     public static final float WORLD_WIDTH = 16f;
     public static final float WORLD_HEIGHT = 9f;
 
-    private AssetManager assetManager;
+    private Assets assets;
     private Engine engine;
     private Viewport viewport;
 
@@ -27,10 +28,11 @@ public class MysticWoods extends Game {
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        assetManager = new AssetManager();
+        assets = new Assets(new AssetManager());
         engine = new PooledEngine();
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
+        engine.addSystem(new AnimationSystem());
         engine.addSystem(new RenderSystem());
 
         setScreen(new GameScreen(this));
@@ -41,8 +43,8 @@ public class MysticWoods extends Game {
         viewport.update(width, height, true);
     }
 
-    public AssetManager getAssetManager() {
-        return assetManager;
+    public Assets getAssets() {
+        return assets;
     }
 
     public Engine getEngine() {
