@@ -3,6 +3,7 @@ package com.mygdx.mysticwoods.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.mygdx.mysticwoods.MysticWoods;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
@@ -12,6 +13,12 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
+        TexturePacker.Settings settings = new TexturePacker.Settings();
+        settings.paddingX = 0;
+        settings.paddingY = 0;
+
+        TexturePacker.process(settings, "./raw_assets", "assets/graphics", "mystic-woods");
+
         return new Lwjgl3Application(new MysticWoods(), getDefaultConfiguration());
     }
 
