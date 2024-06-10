@@ -13,7 +13,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        TexturePacker.Settings settings = new TexturePacker.Settings();
+        final TexturePacker.Settings settings = new TexturePacker.Settings();
         settings.paddingX = 0;
         settings.paddingY = 0;
 
