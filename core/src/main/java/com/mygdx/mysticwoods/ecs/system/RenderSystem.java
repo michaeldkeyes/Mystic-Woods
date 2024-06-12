@@ -5,6 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.mysticwoods.ecs.component.ImageComponent;
 
@@ -14,6 +17,10 @@ public class RenderSystem extends SortedIteratingSystem implements EntityListene
 
     private static final Family FAMILY = Family.all(ImageComponent.class).get();
 
+    private static final float UNIT_SCALE = 1 / 16f;
+
+    private OrthographicCamera camera;
+    private OrthogonalTiledMapRenderer mapRenderer;
     private Stage stage;
 
     public RenderSystem() {
@@ -63,6 +70,9 @@ public class RenderSystem extends SortedIteratingSystem implements EntityListene
 
         forceSort();
 
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
         stage.getViewport().apply();
         stage.act(deltaTime);
         stage.draw();
@@ -70,10 +80,16 @@ public class RenderSystem extends SortedIteratingSystem implements EntityListene
 
     @Override
     protected void processEntity(final Entity entity, final float deltaTime) {
+        // Do nothing
     }
 
     public void setStage(final Stage stage) {
         this.stage = stage;
+        this.camera = (OrthographicCamera) stage.getCamera();
+    }
+
+    public void setMap(final TiledMap map) {
+        mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
     }
 
     private static class YComparator implements Comparator<Entity> {

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.mysticwoods.Assets;
 import com.mygdx.mysticwoods.MysticWoods;
@@ -24,9 +25,10 @@ public class GameScreen extends ScreenAdapter {
         this.engine = game.getEngine();
         stage = new Stage(game.getViewport());
 
-        assets.loadAtlas();
+        assets.load();
 
         engine.getSystem(RenderSystem.class).setStage(stage);
+        engine.getSystem(RenderSystem.class).setMap(assets.loadMap());
     }
 
     @Override

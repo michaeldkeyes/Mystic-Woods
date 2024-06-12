@@ -12,14 +12,25 @@ public class Lwjgl3Launcher {
         createApplication();
     }
 
-    private static Lwjgl3Application createApplication() {
+    private static void createApplication() {
+
+        // magick player.png -crop 48x48 player/frame_%02d.png
+        TexturePacker.process("./raw_assets/graphics", "assets/graphics", "mystic-woods");
+
         final TexturePacker.Settings settings = new TexturePacker.Settings();
-        settings.paddingX = 0;
-        settings.paddingY = 0;
+        settings.paddingX = 6;
+        settings.paddingY = 6;
+        settings.edgePadding = true;
+        settings.duplicatePadding = true;
+        settings.bleed = true;
+        settings.minWidth = 16;
+        settings.minHeight = 16;
+        settings.maxWidth = 512;
+        settings.maxHeight = 512;
 
-        TexturePacker.process(settings, "./raw_assets", "assets/graphics", "mystic-woods");
+        TexturePacker.process(settings, "./raw_assets/map", "assets/graphics/map", "map");
 
-        return new Lwjgl3Application(new MysticWoods(), getDefaultConfiguration());
+        new Lwjgl3Application(new MysticWoods(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
