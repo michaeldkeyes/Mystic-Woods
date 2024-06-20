@@ -5,18 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.mygdx.mysticwoods.ecs.component.AnimationComponent;
 import com.mygdx.mysticwoods.ecs.component.ImageComponent;
-import com.mygdx.mysticwoods.ecs.component.PlayerComponent;
-import com.mygdx.mysticwoods.ecs.component.StateComponent;
 
 import java.util.Comparator;
 
