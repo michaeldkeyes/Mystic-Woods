@@ -17,11 +17,13 @@ import com.mygdx.mysticwoods.screen.GameScreen;
  */
 public class MysticWoods extends Game {
 
+    public static final float UNIT_SCALE = 1 / 16f;
     public static final float WORLD_WIDTH = 16f;
     public static final float WORLD_HEIGHT = 9f;
 
     private Assets assets;
     private Engine engine;
+    private MapManager mapManager;
     private Viewport viewport;
 
     @Override
@@ -30,6 +32,7 @@ public class MysticWoods extends Game {
 
         assets = new Assets(new AssetManager());
         engine = new PooledEngine();
+        mapManager = new MapManager(assets, engine);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
         engine.addSystem(new AnimationSystem());
@@ -49,6 +52,10 @@ public class MysticWoods extends Game {
 
     public Engine getEngine() {
         return engine;
+    }
+
+    public MapManager getMapManager() {
+        return mapManager;
     }
 
     public Viewport getViewport() {

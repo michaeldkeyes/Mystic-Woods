@@ -18,16 +18,14 @@ public class Lwjgl3Launcher {
         TexturePacker.process("./raw_assets/graphics", "assets/graphics", "mystic-woods");
 
         final TexturePacker.Settings settings = new TexturePacker.Settings();
-        settings.paddingX = 6;
-        settings.paddingY = 6;
-        settings.edgePadding = true;
-        settings.duplicatePadding = true;
-        settings.bleed = true;
-        settings.minWidth = 16;
-        settings.minHeight = 16;
-        settings.maxWidth = 512;
-        settings.maxHeight = 512;
+        settings.paddingX = 0;
+        settings.paddingY = 0;
+        settings.edgePadding = false;
+        settings.duplicatePadding = false;
+        settings.bleed = false;
 
+        // npx tile-extruder --tileWidth 16 --tileHeight 16 --extrusion 6 --input objects.png --output objects_ext.png
+        // for tiled, the margin will be the extrusion value, and the spacing will be double the extrusion value
         TexturePacker.process(settings, "./raw_assets/map", "assets/graphics/map", "map");
 
         new Lwjgl3Application(new MysticWoods(), getDefaultConfiguration());

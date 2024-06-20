@@ -5,19 +5,28 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.mygdx.mysticwoods.ecs.component.AnimationComponent;
 import com.mygdx.mysticwoods.ecs.component.ImageComponent;
+import com.mygdx.mysticwoods.ecs.component.PlayerComponent;
+import com.mygdx.mysticwoods.ecs.component.StateComponent;
 
 import java.util.Comparator;
 
-public class RenderSystem extends SortedIteratingSystem implements EntityListener {
+import static com.mygdx.mysticwoods.MysticWoods.UNIT_SCALE;
+
+public class RenderSystem extends SortedIteratingSystem implements EntityListener, Disposable {
+
+    private static final String TAG = RenderSystem.class.getSimpleName();
 
     private static final Family FAMILY = Family.all(ImageComponent.class).get();
-
-    private static final float UNIT_SCALE = 1 / 16f;
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -89,7 +98,15 @@ public class RenderSystem extends SortedIteratingSystem implements EntityListene
     }
 
     public void setMap(final TiledMap map) {
+
         mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
+    }
+
+    @Override
+    public void dispose() {
+        if (mapRenderer != null) {
+            mapRenderer.dispose();
+        }
     }
 
     private static class YComparator implements Comparator<Entity> {
