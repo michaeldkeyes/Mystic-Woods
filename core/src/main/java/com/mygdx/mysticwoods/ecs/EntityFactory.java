@@ -24,31 +24,18 @@ public class EntityFactory {
     public void createPlayer(final float x, final float y) {
         final Entity player = engine.createEntity();
 
-        final PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
+        final StateComponent stateComponent = createStateComponent(player, State.IDLE, Direction.RIGHT);
 
-        final StateComponent stateComponent = engine.createComponent(StateComponent.class);
-        stateComponent.setState(PlayerComponent.IDLE);
-        stateComponent.setDirection("right");
+        final ImageComponent imageComponent = createImageComponent(
+            player,
+            "player/" + stateComponent.get(),
+            x, y,
+            3f, 3f
+        );
 
-        final ImageComponent imageComponent = engine.createComponent(ImageComponent.class);
-        imageComponent.image = assets.createImage("player/" + stateComponent.get());
-        imageComponent.image.setSize(3f, 3f);
-        imageComponent.image.setPosition(x, y);
+        createPhysicsComponent(player, x, y, imageComponent.image.getWidth(), imageComponent.image.getHeight());
 
-        final Body body = physicsBodyFactory.createBody(BodyDef.BodyType.DynamicBody, x, y,
-            imageComponent.image.getWidth(),
-            imageComponent.image.getHeight(), false);
-        final PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
-        physicsComponent.body = body;
-
-        final AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
-        animationComponent.animations.put(stateComponent.get(), assets.createAnimation("player/" + stateComponent.get()));
-
-        player.add(playerComponent);
-        player.add(stateComponent);
-        player.add(imageComponent);
-        player.add(physicsComponent);
-        player.add(animationComponent);
+        createAnimationComponent(player, stateComponent.get(), "player/" + stateComponent.get());
 
         engine.addEntity(player);
     }
@@ -56,33 +43,58 @@ public class EntityFactory {
     public void createSlime(final float x, final float y) {
         final Entity slime = engine.createEntity();
 
-        final SlimeComponent slimeComponent = engine.createComponent(SlimeComponent.class);
+        final StateComponent slimeStateComponent = createStateComponent(slime, State.IDLE, Direction.RIGHT);
 
-        final StateComponent slimeStateComponent = engine.createComponent(StateComponent.class);
-        slimeStateComponent.setState(SlimeComponent.IDLE);
-        slimeStateComponent.setDirection("right");
+        final ImageComponent slimeImageComponent = createImageComponent(
+            slime,
+            "slime/" + slimeStateComponent.get(),
+            x, y,
+            2f, 2f
+        );
 
-        final ImageComponent slimeImageComponent = engine.createComponent(ImageComponent.class);
-        slimeImageComponent.image = assets.createImage("slime/" + slimeStateComponent.get());
-        slimeImageComponent.image.setSize(2f, 2f);
-        slimeImageComponent.image.setPosition(x, y);
+        createPhysicsComponent(slime, x, y, slimeImageComponent.image.getWidth(), slimeImageComponent.image.getHeight());
 
-        final Body body = physicsBodyFactory.createBody(BodyDef.BodyType.DynamicBody, x, y,
-            slimeImageComponent.image.getWidth(),
-            slimeImageComponent.image.getHeight(), false);
-        final PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
-        physicsComponent.body = body;
-
-        final AnimationComponent slimeAnimationComponent = engine.createComponent(AnimationComponent.class);
-
-        slimeAnimationComponent.animations.put(slimeStateComponent.get(), assets.createAnimation("slime/" + slimeStateComponent.get()));
-
-        slime.add(slimeImageComponent);
-        slime.add(slimeComponent);
-        slime.add(slimeStateComponent);
-        slime.add(slimeAnimationComponent);
+        createAnimationComponent(slime, slimeStateComponent.get(), "slime/" + slimeStateComponent.get());
 
         engine.addEntity(slime);
+    }
+
+    private StateComponent createStateComponent(final Entity entity, final State state, final Direction direction) {
+        final StateComponent stateComponent = engine.createComponent(StateComponent.class);
+        stateComponent.setState(state);
+        stateComponent.setDirection(direction);
+
+        entity.add(stateComponent);
+
+        return stateComponent;
+    }
+
+    private ImageComponent createImageComponent(final Entity entity, final String path, final float x, final float y,
+                                                final float width, final float height
+    ) {
+        final ImageComponent imageComponent = engine.createComponent(ImageComponent.class);
+        imageComponent.image = assets.createImage(path);
+        imageComponent.image.setSize(width, height);
+        imageComponent.image.setPosition(x, y);
+
+        entity.add(imageComponent);
+
+        return imageComponent;
+    }
+
+    private void createPhysicsComponent(final Entity entity, final float x, final float y, final float width, final float height) {
+        final PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+
+        physicsComponent.body = physicsBodyFactory.createBody(BodyDef.BodyType.DynamicBody, x, y, width, height, false);
+
+        entity.add(physicsComponent);
+    }
+
+    private void createAnimationComponent(final Entity entity, final String animationName, final String path) {
+        final AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
+        animationComponent.animations.put(animationName, assets.createAnimation(path));
+
+        entity.add(animationComponent);
     }
 
 }
