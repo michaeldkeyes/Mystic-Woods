@@ -1,19 +1,24 @@
 package com.mygdx.mysticwoods.ecs;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.mysticwoods.Assets;
+import com.mygdx.mysticwoods.PhysicsBodyFactory;
 import com.mygdx.mysticwoods.ecs.component.*;
 
 public class EntityFactory {
 
     private final Assets assets;
     private final Engine engine;
+    private final PhysicsBodyFactory physicsBodyFactory;
 
-    public EntityFactory(final Assets assets, final Engine engine) {
+    public EntityFactory(final Assets assets, final Engine engine, final World world) {
         this.assets = assets;
         this.engine = engine;
+        this.physicsBodyFactory = new PhysicsBodyFactory(world);
     }
 
     public void createPlayer(final float x, final float y) {
@@ -30,12 +35,19 @@ public class EntityFactory {
         imageComponent.image.setSize(3f, 3f);
         imageComponent.image.setPosition(x, y);
 
+        final Body body = physicsBodyFactory.createBody(BodyDef.BodyType.DynamicBody, x, y,
+            imageComponent.image.getWidth(),
+            imageComponent.image.getHeight(), false);
+        final PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+        physicsComponent.body = body;
+
         final AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
         animationComponent.animations.put(stateComponent.get(), assets.createAnimation("player/" + stateComponent.get()));
 
-        player.add(imageComponent);
         player.add(playerComponent);
         player.add(stateComponent);
+        player.add(imageComponent);
+        player.add(physicsComponent);
         player.add(animationComponent);
 
         engine.addEntity(player);
@@ -54,6 +66,12 @@ public class EntityFactory {
         slimeImageComponent.image = assets.createImage("slime/" + slimeStateComponent.get());
         slimeImageComponent.image.setSize(2f, 2f);
         slimeImageComponent.image.setPosition(x, y);
+
+        final Body body = physicsBodyFactory.createBody(BodyDef.BodyType.DynamicBody, x, y,
+            slimeImageComponent.image.getWidth(),
+            slimeImageComponent.image.getHeight(), false);
+        final PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+        physicsComponent.body = body;
 
         final AnimationComponent slimeAnimationComponent = engine.createComponent(AnimationComponent.class);
 

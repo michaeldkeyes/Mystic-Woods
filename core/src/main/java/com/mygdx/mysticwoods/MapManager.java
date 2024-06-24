@@ -13,6 +13,8 @@ public class MapManager {
     private static final String TAG = MapManager.class.getSimpleName();
 
     private static final String ENTITY_LAYER = "entities";
+    private static final String PLAYER = "player";
+    private static final String SLIME = "slime";
 
     private final Assets assets;
     private final EntityFactory entityFactory;
@@ -40,9 +42,9 @@ public class MapManager {
             final float y = object.getProperties().get("y", Float.class) * UNIT_SCALE;
 
             // Create entity
-            if (object.getName().equals("player")) {
+            if (object.getName().equals(PLAYER)) {
                 entityFactory.createPlayer(x, y);
-            } else if (object.getName().equals("slime")) {
+            } else if (object.getName().equals(SLIME)) {
                 entityFactory.createSlime(x, y);
             } else {
                 Gdx.app.error(TAG, "Unknown object: " + object.getName());

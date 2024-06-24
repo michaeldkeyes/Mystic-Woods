@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.mysticwoods.Assets;
 import com.mygdx.mysticwoods.MapManager;
 import com.mygdx.mysticwoods.MysticWoods;
+import com.mygdx.mysticwoods.ecs.system.DebugSystem;
 import com.mygdx.mysticwoods.ecs.system.RenderSystem;
 
 public class GameScreen extends ScreenAdapter {
@@ -29,6 +30,7 @@ public class GameScreen extends ScreenAdapter {
         assets.load();
 
         engine.getSystem(RenderSystem.class).setStage(stage);
+        engine.getSystem(DebugSystem.class).setCamera(stage.getCamera());
 
         final TiledMap map = mapManager.setUpMap();
 
@@ -46,7 +48,8 @@ public class GameScreen extends ScreenAdapter {
             Gdx.app.exit();
         }
 
-        engine.update(delta);
+        // limit the delta time
+        engine.update(Math.min(delta, 0.25f));
     }
 
     @Override

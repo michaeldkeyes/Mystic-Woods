@@ -6,10 +6,14 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.mysticwoods.ecs.EntityFactory;
 import com.mygdx.mysticwoods.ecs.system.AnimationSystem;
+import com.mygdx.mysticwoods.ecs.system.DebugSystem;
+import com.mygdx.mysticwoods.ecs.system.PhysicsSystem;
 import com.mygdx.mysticwoods.ecs.system.RenderSystem;
 import com.mygdx.mysticwoods.screen.GameScreen;
 
@@ -26,6 +30,7 @@ public class MysticWoods extends Game {
     private Engine engine;
     private EntityFactory entityFactory;
     private MapManager mapManager;
+    private World world;
     private Viewport viewport;
 
     @Override
@@ -34,12 +39,16 @@ public class MysticWoods extends Game {
 
         assets = new Assets(new AssetManager());
         engine = new PooledEngine();
-        entityFactory = new EntityFactory(assets, engine);
+        world = new World(new Vector2(0, 0), true);
+        world.setAutoClearForces(false);
+        entityFactory = new EntityFactory(assets, engine, world);
         mapManager = new MapManager(assets, entityFactory);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
+        engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new RenderSystem());
+        engine.addSystem(new DebugSystem(world));
 
         setScreen(new GameScreen(this));
     }
@@ -47,6 +56,13 @@ public class MysticWoods extends Game {
     @Override
     public void resize(final int width, final int height) {
         viewport.update(width, height, true);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        assets.dispose();
+        world.dispose();
     }
 
     public Assets getAssets() {
