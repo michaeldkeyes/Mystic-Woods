@@ -24,6 +24,9 @@ public class EntityFactory {
     public void createPlayer(final float x, final float y) {
         final Entity player = engine.createEntity();
 
+        final PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
+        player.add(playerComponent);
+
         final StateComponent stateComponent = createStateComponent(player, State.IDLE, Direction.RIGHT);
 
         final ImageComponent imageComponent = createImageComponent(

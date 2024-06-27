@@ -83,6 +83,8 @@ public class PhysicsSystem extends IntervalIteratingSystem implements EntityList
         final PhysicsComponent physicsComponent = PhysicsComponent.MAPPER.get(entity);
         final ImageComponent imageComponent = ImageComponent.MAPPER.get(entity);
 
+        physicsComponent.body.setLinearVelocity(physicsComponent.velocity);
+
         if (physicsComponent.body != null && imageComponent.image != null) {
             imageComponent.image.setPosition(physicsComponent.body.getPosition().x - imageComponent.image.getWidth() * 0.5f,
                 physicsComponent.body.getPosition().y - imageComponent.image.getHeight() * 0.5f);

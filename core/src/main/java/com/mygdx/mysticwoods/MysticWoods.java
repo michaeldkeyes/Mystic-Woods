@@ -1,8 +1,10 @@
 package com.mygdx.mysticwoods;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -11,14 +13,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.mysticwoods.ecs.EntityFactory;
-import com.mygdx.mysticwoods.ecs.system.AnimationSystem;
-import com.mygdx.mysticwoods.ecs.system.DebugSystem;
-import com.mygdx.mysticwoods.ecs.system.PhysicsSystem;
-import com.mygdx.mysticwoods.ecs.system.RenderSystem;
+import com.mygdx.mysticwoods.ecs.component.PlayerComponent;
+import com.mygdx.mysticwoods.ecs.system.*;
 import com.mygdx.mysticwoods.screen.GameScreen;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
- * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ * {@link ApplicationListener} implementation shared by all platforms.
  */
 public class MysticWoods extends Game {
 
@@ -45,6 +47,7 @@ public class MysticWoods extends Game {
         mapManager = new MapManager(assets, entityFactory);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
+        engine.addSystem(new PlayerMovementSystem());
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new RenderSystem());

@@ -1,6 +1,8 @@
 package com.mygdx.mysticwoods.screen;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -9,8 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.mysticwoods.Assets;
 import com.mygdx.mysticwoods.MapManager;
 import com.mygdx.mysticwoods.MysticWoods;
+import com.mygdx.mysticwoods.ecs.component.PlayerComponent;
 import com.mygdx.mysticwoods.ecs.system.DebugSystem;
 import com.mygdx.mysticwoods.ecs.system.RenderSystem;
+import com.mygdx.mysticwoods.input.PlayerInputProcessor;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -34,6 +38,8 @@ public class GameScreen extends ScreenAdapter {
 
         final TiledMap map = mapManager.setUpMap();
 
+        setUpInputProcessor();
+
         engine.getSystem(RenderSystem.class).setMap(map);
     }
 
@@ -56,5 +62,17 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
         assets.dispose();
+    }
+
+    private void setUpInputProcessor() {
+        Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).first();
+        if (player == null) {
+            Gdx.app.error(TAG, "Player entity not found");
+            return;
+        }
+        final PlayerComponent playerComponent = PlayerComponent.MAPPER.get(player);
+
+         final PlayerInputProcessor playerInputProcessor = new PlayerInputProcessor(playerComponent);
+         Gdx.input.setInputProcessor(playerInputProcessor);
     }
 }
