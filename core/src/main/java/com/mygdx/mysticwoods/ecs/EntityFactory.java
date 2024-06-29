@@ -10,7 +10,8 @@ import com.mygdx.mysticwoods.ecs.component.*;
 
 public class EntityFactory {
 
-    private static final String DEFAULT_PATH = State.IDLE.getStateString() + "_" + Direction.RIGHT.getDirectionString();
+    private static final String DEFAULT_PATH =
+        State.IDLE.toString().toLowerCase() + "_" + Direction.RIGHT.toString().toLowerCase();
 
     private final Assets assets;
     private final Engine engine;

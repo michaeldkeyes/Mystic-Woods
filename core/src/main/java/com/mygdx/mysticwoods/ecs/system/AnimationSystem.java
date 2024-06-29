@@ -27,10 +27,10 @@ public class AnimationSystem extends IteratingSystem {
         final DirectionComponent directionComponent = DirectionComponent.MAPPER.get(entity);
         final StateComponent stateComponent = StateComponent.MAPPER.get(entity);
 
-        final String path = stateComponent.getState().getStateString() + "_" + directionComponent.getDirection().getDirectionString();
+        final String path =
+            stateComponent.getState().toString().toLowerCase() + "_" + directionComponent.getDirection().toString().toLowerCase();
 
-        @SuppressWarnings("unchecked") final Animation<TextureRegionDrawable> animation =
-            animationComponent.animations.get(path);
+        final Animation<TextureRegionDrawable> animation = animationComponent.animations.get(path);
 
         if (animation == null) {
             Gdx.app.debug("AnimationSystem", "No animation found for state: " + path);

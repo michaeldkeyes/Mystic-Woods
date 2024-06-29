@@ -13,8 +13,4 @@ public enum State {
         this.stateString = state;
     }
 
-    public String getStateString() {
-        return stateString;
-    }
-
 }
