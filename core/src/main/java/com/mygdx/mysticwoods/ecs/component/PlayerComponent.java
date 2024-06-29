@@ -7,8 +7,4 @@ public class PlayerComponent implements Component {
 
     public static final ComponentMapper<PlayerComponent> MAPPER = ComponentMapper.getFor(PlayerComponent.class);
 
-    public boolean isMovingLeft = false;
-    public boolean isMovingRight = false;
-    public boolean isMovingUp = false;
-    public boolean isMovingDown = false;
 }

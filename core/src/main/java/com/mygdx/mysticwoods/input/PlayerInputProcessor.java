@@ -1,32 +1,45 @@
 package com.mygdx.mysticwoods.input;
 
 import com.badlogic.gdx.InputAdapter;
-import com.mygdx.mysticwoods.ecs.component.PlayerComponent;
+import com.mygdx.mysticwoods.ecs.Direction;
+import com.mygdx.mysticwoods.ecs.State;
+import com.mygdx.mysticwoods.ecs.component.DirectionComponent;
+import com.mygdx.mysticwoods.ecs.component.StateComponent;
 
 import static com.badlogic.gdx.Input.Keys.*;
 
 public class PlayerInputProcessor extends InputAdapter {
 
-    private final PlayerComponent playerComponent;
+    private final DirectionComponent directionComponent;
+    private final StateComponent stateComponent;
 
-    public PlayerInputProcessor(final PlayerComponent playerComponent) {
-        this.playerComponent = playerComponent;
+    public PlayerInputProcessor(final StateComponent stateComponent, final DirectionComponent directionComponent) {
+        this.stateComponent = stateComponent;
+        this.directionComponent = directionComponent;
     }
 
     @Override
     public boolean keyDown(final int keycode) {
         switch (keycode) {
             case LEFT, A:
-                playerComponent.isMovingLeft = true;
+                stateComponent.setState(State.WALK);
+                directionComponent.isLeft = true;
+                directionComponent.setDirection(Direction.LEFT);
                 break;
             case RIGHT, D:
-                playerComponent.isMovingRight = true;
+                stateComponent.setState(State.WALK);
+                directionComponent.isRight = true;
+                directionComponent.setDirection(Direction.RIGHT);
                 break;
             case UP, W:
-                playerComponent.isMovingUp = true;
+                stateComponent.setState(State.WALK);
+                directionComponent.isUp = true;
+                directionComponent.setDirection(Direction.UP);
                 break;
             case DOWN, S:
-                playerComponent.isMovingDown = true;
+                stateComponent.setState(State.WALK);
+                directionComponent.isDown = true;
+                directionComponent.setDirection(Direction.DOWN);
                 break;
             default:
                 return false;
@@ -39,19 +52,23 @@ public class PlayerInputProcessor extends InputAdapter {
     public boolean keyUp(final int keycode) {
         switch (keycode) {
             case LEFT, A:
-                playerComponent.isMovingLeft = false;
+                directionComponent.isLeft = false;
                 break;
             case RIGHT, D:
-                playerComponent.isMovingRight = false;
+                directionComponent.isRight = false;
                 break;
             case UP, W:
-                playerComponent.isMovingUp = false;
+                directionComponent.isUp = false;
                 break;
             case DOWN, S:
-                playerComponent.isMovingDown = false;
+                directionComponent.isDown = false;
                 break;
             default:
                 return false;
+        }
+
+        if (!directionComponent.isUp && !directionComponent.isDown && !directionComponent.isLeft && !directionComponent.isRight) {
+            stateComponent.setState(State.IDLE);
         }
 
         return true;

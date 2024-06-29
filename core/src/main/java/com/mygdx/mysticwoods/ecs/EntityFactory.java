@@ -2,7 +2,6 @@ package com.mygdx.mysticwoods.ecs;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.mysticwoods.Assets;
@@ -10,6 +9,8 @@ import com.mygdx.mysticwoods.PhysicsBodyFactory;
 import com.mygdx.mysticwoods.ecs.component.*;
 
 public class EntityFactory {
+
+    private static final String DEFAULT_PATH = State.IDLE.getStateString() + "_" + Direction.RIGHT.getDirectionString();
 
     private final Assets assets;
     private final Engine engine;
@@ -27,18 +28,22 @@ public class EntityFactory {
         final PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         player.add(playerComponent);
 
-        final StateComponent stateComponent = createStateComponent(player, State.IDLE, Direction.RIGHT);
+        final DirectionComponent directionComponent = engine.createComponent(DirectionComponent.class);
+        player.add(directionComponent);
+
+        createStateComponent(player, State.IDLE);
 
         final ImageComponent imageComponent = createImageComponent(
             player,
-            "player/" + stateComponent.get(),
+            "player/" + DEFAULT_PATH,
             x, y,
             3f, 3f
         );
 
         createPhysicsComponent(player, x, y, imageComponent.image.getWidth(), imageComponent.image.getHeight());
 
-        createAnimationComponent(player, stateComponent.get(), "player/" + stateComponent.get());
+        createAnimationComponent(player, DEFAULT_PATH,
+            "player/" + DEFAULT_PATH);
 
         engine.addEntity(player);
     }
@@ -46,26 +51,28 @@ public class EntityFactory {
     public void createSlime(final float x, final float y) {
         final Entity slime = engine.createEntity();
 
-        final StateComponent slimeStateComponent = createStateComponent(slime, State.IDLE, Direction.RIGHT);
+        createStateComponent(slime, State.IDLE);
+
+        final DirectionComponent directionComponent = engine.createComponent(DirectionComponent.class);
+        slime.add(directionComponent);
 
         final ImageComponent slimeImageComponent = createImageComponent(
             slime,
-            "slime/" + slimeStateComponent.get(),
+            "slime/" + DEFAULT_PATH,
             x, y,
             2f, 2f
         );
 
         createPhysicsComponent(slime, x, y, slimeImageComponent.image.getWidth(), slimeImageComponent.image.getHeight());
 
-        createAnimationComponent(slime, slimeStateComponent.get(), "slime/" + slimeStateComponent.get());
+        createAnimationComponent(slime, DEFAULT_PATH, "slime/" + DEFAULT_PATH);
 
         engine.addEntity(slime);
     }
 
-    private StateComponent createStateComponent(final Entity entity, final State state, final Direction direction) {
+    private StateComponent createStateComponent(final Entity entity, final State state) {
         final StateComponent stateComponent = engine.createComponent(StateComponent.class);
         stateComponent.setState(state);
-        stateComponent.setDirection(direction);
 
         entity.add(stateComponent);
 
@@ -96,6 +103,11 @@ public class EntityFactory {
     private void createAnimationComponent(final Entity entity, final String animationName, final String path) {
         final AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
         animationComponent.animations.put(animationName, assets.createAnimation(path));
+        animationComponent.animations.put("walk_right", assets.createAnimation("player/walk_right"));
+        animationComponent.animations.put("walk_up", assets.createAnimation("player/walk_up"));
+        animationComponent.animations.put("walk_down", assets.createAnimation("player/walk_down"));
+        animationComponent.animations.put("idle_up", assets.createAnimation("player/idle_up"));
+        animationComponent.animations.put("idle_down", assets.createAnimation("player/idle_down"));
 
         entity.add(animationComponent);
     }

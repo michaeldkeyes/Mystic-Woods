@@ -13,7 +13,7 @@ public enum State {
         this.stateString = state;
     }
 
-    public String getState() {
+    public String getStateString() {
         return stateString;
     }
 

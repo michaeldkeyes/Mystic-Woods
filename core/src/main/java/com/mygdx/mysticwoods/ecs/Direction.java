@@ -13,7 +13,7 @@ public enum Direction {
         this.directionString = direction;
     }
 
-    public String getDirection() {
+    public String getDirectionString() {
         return directionString;
     }
 }
